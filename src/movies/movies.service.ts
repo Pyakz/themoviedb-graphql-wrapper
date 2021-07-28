@@ -1,17 +1,12 @@
 import { IMAGE_NOT_FOUND, PERSON_PROFILE_PLACEHOLDER } from './../constant';
 import { Result } from './typescript/movies.types';
-import {
-  Movie,
-  MoviesParameters,
-  Results,  
-} from './typescript/movies.types';
+import { Movie, MoviesParameters, Results } from './typescript/movies.types';
 import { GraphQLError } from 'graphql';
 import { Injectable } from '@nestjs/common';
 import TMDB from './movies.axios';
 import { Cast, CastElement } from './typescript/cast.types';
 @Injectable()
 export class MoviesService {
-
   async findMany({ genre, sort_by, page }: MoviesParameters): Promise<Results> {
     try {
       const req = await TMDB.get(
@@ -25,9 +20,38 @@ export class MoviesService {
         results: response.results.map((movie: Movie) => {
           return {
             ...movie,
-            backdrop_path: movie.backdrop_path === null ? IMAGE_NOT_FOUND : movie.backdrop_path,
-            poster_path: movie.poster_path === null ? IMAGE_NOT_FOUND : movie.poster_path,
+            backdrop_path:
+              movie.backdrop_path === null
+                ? IMAGE_NOT_FOUND
+                : movie.backdrop_path,
+            poster_path:
+              movie.poster_path === null ? IMAGE_NOT_FOUND : movie.poster_path,
+          };
+        }),
+      };
+      return mutatedResponse;
+    } catch (error) {
+      throw new GraphQLError(error.message);
+    }
+  }
 
+  async findByQuery(query: string, page: number): Promise<Results> {
+    try {
+      const req = await TMDB.get(
+        `/search/movie?&query=${query}&page=${page ? page : 1}`,
+      );
+      const response = await req.data;
+      const mutatedResponse = {
+        ...response,
+        results: response.results.map((movie: Movie) => {
+          return {
+            ...movie,
+            backdrop_path:
+              movie.backdrop_path === null
+                ? IMAGE_NOT_FOUND
+                : movie.backdrop_path,
+            poster_path:
+              movie.poster_path === null ? IMAGE_NOT_FOUND : movie.poster_path,
           };
         }),
       };
@@ -77,8 +101,11 @@ export class MoviesService {
       const response = await req.data;
       const mutatedPerson = {
         ...response,
-        profile_path: response.profile_path === null ? PERSON_PROFILE_PLACEHOLDER : response.profile_path 
-      }
+        profile_path:
+          response.profile_path === null
+            ? PERSON_PROFILE_PLACEHOLDER
+            : response.profile_path,
+      };
       return mutatedPerson;
     } catch (error) {
       throw new GraphQLError(error.message);

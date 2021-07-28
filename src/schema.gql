@@ -125,6 +125,7 @@ type Results {
 
 type Query {
   movies(params: MoviesParameters!): Results!
+  search(page: Int!, query: String!): Results!
   movie(id: Int!): Movie!
   person(id: Int!): CastElement!
 }
