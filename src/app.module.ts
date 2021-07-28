@@ -26,7 +26,7 @@ import { UserModule } from './user/user.module';
     }),
     TypeOrmModule.forRoot({
       type: 'mongodb',
-      url: process.env.MONGO_URL,
+      url:process.env.NODE_ENV ? process.env.MONGO_URL : process.env.MONGO_URL_DEV,
       synchronize: true,
       useUnifiedTopology: true,
       entities: ['dist/**/*.entity{.ts,.js}'],
