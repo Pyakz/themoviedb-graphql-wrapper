@@ -1,6 +1,8 @@
 import { Cast } from './cast.types';
 import { ObjectType, Field, InputType } from '@nestjs/graphql';
-import { GENRES, SORT_BY } from './movies.enums';
+import { DiscoverCategory, GENRES, SORT_BY } from './movies.enums';
+import { Images } from './images.types';
+import { CommentType } from 'src/comments/comment.types';
 
 @InputType()
 export class MoviesParameters {
@@ -9,6 +11,15 @@ export class MoviesParameters {
 
   @Field((type) => GENRES)
   genre: GENRES;
+
+  @Field()
+  page: number;
+}
+
+@InputType()
+export class Discover {
+  @Field((type) => DiscoverCategory)
+  category: DiscoverCategory;
 
   @Field()
   page: number;
@@ -109,8 +120,13 @@ export class Result {
 
 @ObjectType()
 export class Movie {
-  @Field((type) => Cast, { nullable: true })
-  casts: Cast;
+  // @Field((type) => Cast, { nullable: true })
+  // casts: Cast;
+
+  // @Field((type) => Images, { nullable: true })
+  // images: Images;
+  @Field((type) => [CommentType], { nullable: true })
+  comments: CommentType[];
 
   @Field({ nullable: true })
   adult: boolean;

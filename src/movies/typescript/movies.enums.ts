@@ -49,6 +49,16 @@ export enum Department {
   VisualEffects = 'Visual Effects',
   Writing = 'Writing',
 }
+export enum DiscoverCategory {
+  Top_Rated = 'top_rated',
+  Upcoming = 'upcoming',
+  Popular = 'popular',
+}
+
+registerEnumType(DiscoverCategory, {
+  name: 'discover',
+  description: 'Discover by: Top Rated, Upcoming, Popular ',
+});
 
 registerEnumType(Department, {
   name: 'department',

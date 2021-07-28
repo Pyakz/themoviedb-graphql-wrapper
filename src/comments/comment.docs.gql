@@ -1,0 +1,41 @@
+mutation CreateComment {
+  createComment(createComment:{
+    user:"MARKY", 
+    body:"Okay", 
+    movie:"497698"}) {
+    _id
+    user
+    movie
+    createdAt
+    updatedAt
+    
+  }
+}
+
+query findAll {
+	comments(movieID:497698) {
+    _id
+    user
+    body
+    createdAt
+    updatedAt
+  }
+}
+query findOne {
+  comment(id:"61016e02fe57c32030d66af4") {
+    user
+    body
+  }
+}
+
+mutation Update {
+  updateComment(id:"61016e02fe57c32030d66af4",body:"Gwappoo") {
+    message
+  }
+}
+
+mutation Delete {
+  removeComment(id:"61016e02fe57c32030d66af4") {
+    message
+  }
+}

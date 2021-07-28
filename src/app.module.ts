@@ -5,6 +5,9 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MoviesModule } from './movies/movies.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { CommentsModule } from './comments/comments.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -21,7 +24,16 @@ import { MoviesModule } from './movies/movies.module';
         return graphQLFormattedError;
       },
     }),
+    TypeOrmModule.forRoot({
+      type: 'mongodb',
+      url: process.env.MONGO_URL,
+      synchronize: true,
+      useUnifiedTopology: true,
+      entities: ['dist/**/*.entity{.ts,.js}'],
+    }),
     MoviesModule,
+    CommentsModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

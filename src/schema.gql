@@ -41,6 +41,24 @@ enum department {
   Writing
 }
 
+type CommentType {
+  _id: ID
+  user: String
+  movie: String
+  body: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Updated {
+  message: String
+}
+
 type BelongsToCollection {
   id: Float
   name: String
@@ -87,7 +105,7 @@ type Result {
 }
 
 type Movie {
-  casts: Cast!
+  comments: [CommentType!]
   adult: Boolean
   backdrop_path: String
   belongs_to_collection: BelongsToCollection
@@ -114,6 +132,8 @@ type Movie {
   vote_average: Float
   vote_count: Float
   videos: Videos
+  images: Images!
+  casts: Cast!
 }
 
 type Results {
@@ -123,11 +143,43 @@ type Results {
   total_results: Float
 }
 
+type Images {
+  backdrops: [Backdrop!]
+  id: Float
+  logos: [Backdrop!]
+  posters: [Backdrop!]
+}
+
+type Backdrop {
+  aspect_ratio: Float
+  height: Float
+  iso_639_1: String
+  file_path: String
+  vote_average: Float
+  vote_count: Float
+  width: Float
+}
+
+type UserType {
+  _id: ID
+  username: String
+  password: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type Query {
   movies(params: MoviesParameters!): Results!
+
+  """Top Rated, Popular, Upcoming"""
+  discover(params: Discover!): Results!
   search(page: Int!, query: String!): Results!
   movie(id: Int!): Movie!
   person(id: Int!): CastElement!
+  similar(id: Int!, page: Int!): Results!
+  comments(movieID: Float!): [CommentType!]!
+  comment(id: String!): CommentType!
+  user(id: String!): UserType!
 }
 
 input MoviesParameters {
@@ -173,6 +225,35 @@ enum genre {
   Western
 }
 
+input Discover {
+  category: discover!
+  page: Float!
+}
+
+"""Discover by: Top Rated, Upcoming, Popular """
+enum discover {
+  Top_Rated
+  Upcoming
+  Popular
+}
+
 type Mutation {
   updateMovie(updateMovieInput: Float!): Movie!
+  createComment(createComment: CommentInput!): CommentType!
+  updateComment(body: String!, id: String!): Updated!
+  removeComment(id: String!): Updated!
+  createUser(createUserInput: CreateUserAccount!): UserType!
+  updateUser(update: CreateUserAccount!, id: String!): Updated!
+  removeUser(id: String!): Updated!
+}
+
+input CommentInput {
+  user: String
+  body: String
+  movie: String
+}
+
+input CreateUserAccount {
+  username: String
+  password: String
 }

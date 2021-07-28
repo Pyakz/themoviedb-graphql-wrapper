@@ -1,41 +1,61 @@
 query Movies {
   movies(
 	params:{
-    sort_by:REVENUE_ASC,
-    page:2,
-    genre:Action
+    sort_by:POPULARITY_DESC,
+    page:1,
+    genre:History
   }
   ) {
-   page
-    total_results
-    total_pages
-   results {
-    id
+  results {
     title
-		release_date
-    vote_average
     poster_path
+    backdrop_path
+    images {
+    backdrops {
+      file_path
+    }
+    }
   }
   }
 }
 
 query Movie {
-  movie(id:854185) {
+  movie(id:37686) {
     title
-    tagline
-    release_date
-    vote_average
-    genres {
-      id
-      name
+  	images {
+      backdrops {
+        file_path
+      }
     }
   }
 }
-
+query Search {
+  search(page:1, query:"Batman") {
+    page
+    results {
+      title
+    }
+  }
+}
 query Person {
   person(id:1245) {
     name
     profile_path
     gender
+  }
+}
+query Similar {
+  similar(page:1, id:497698) {
+    results {
+      title
+    }
+  }
+}
+
+query Discover {
+  discover(params:{page:1, category:Popular}) {
+    results {
+      title
+    }
   }
 }

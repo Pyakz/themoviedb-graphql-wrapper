@@ -26,15 +26,20 @@
     "@nestjs/core": "^7.6.15",
     "@nestjs/graphql": "^8.0.2",
     "@nestjs/platform-express": "^7.6.15",
+    "@nestjs/typeorm": "^8.0.1",
     "apollo-server-express": "2.25.1",
     "axios": "^0.21.1",
+    "bcryptjs": "^2.4.3",
     "dotenv": "^10.0.0",
     "graphql": "^15.5.1",
     "graphql-tools": "^7.0.5",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "3.6.9",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^6.6.6",
-    "ts-morph": "^11.0.3"
+    "rxjs": "7",
+    "ts-morph": "^11.0.3",
+    "typeorm": "^0.2.34"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.6.0",
