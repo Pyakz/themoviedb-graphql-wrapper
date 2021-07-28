@@ -1,0 +1,177 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Cast {
+  id: Float
+  cast: [CastElement!]
+  crew: [CastElement!]
+}
+
+type CastElement {
+  adult: Boolean
+  gender: Float
+  id: Float
+  known_for_department: department
+  name: String
+  original_name: String
+  popularity: Float
+  profile_path: String
+  cast_id: Float
+  character: String
+  credit_id: String
+  order: Float
+  department: department
+  job: String
+}
+
+"""Department"""
+enum department {
+  Acting
+  Art
+  Camera
+  CostumeMakeUp
+  Crew
+  Directing
+  Editing
+  Lighting
+  Production
+  Sound
+  VisualEffects
+  Writing
+}
+
+type BelongsToCollection {
+  id: Float
+  name: String
+  poster_path: String
+  backdrop_path: String
+}
+
+type Genre {
+  id: Float
+  name: String
+}
+
+type ProductionCompany {
+  id: Float
+  logo_path: String
+  name: String
+  origin_country: String
+}
+
+type ProductionCountry {
+  iso_3166_1: String
+  name: String
+}
+
+type SpokenLanguage {
+  english_name: String
+  iso_639_1: String
+  name: String
+}
+
+type Videos {
+  results: [Result!]
+}
+
+type Result {
+  id: String
+  iso_639_1: String
+  iso_3166_1: String
+  key: String
+  name: String
+  site: String
+  size: Float
+  type: String
+}
+
+type Movie {
+  casts: Cast!
+  adult: Boolean
+  backdrop_path: String
+  belongs_to_collection: BelongsToCollection
+  budget: Float
+  genres: [Genre!]
+  homepage: String
+  id: Float
+  imdb_id: String
+  original_language: String
+  original_title: String
+  overview: String
+  popularity: Float
+  poster_path: String
+  production_companies: [ProductionCompany!]
+  production_countries: [ProductionCountry!]
+  release_date: String
+  revenue: Float
+  runtime: Float
+  spoken_languages: [SpokenLanguage!]
+  status: String
+  tagline: String
+  title: String
+  video: Boolean
+  vote_average: Float
+  vote_count: Float
+  videos: Videos
+}
+
+type Results {
+  page: Float
+  results: [Movie!]
+  total_pages: Float
+  total_results: Float
+}
+
+type Query {
+  movies(params: MoviesParameters!): Results!
+  movie(id: Int!): Movie!
+  person(id: Int!): CastElement!
+}
+
+input MoviesParameters {
+  sort_by: sort_by!
+  genre: genre!
+  page: Float!
+}
+
+"""Sort Values"""
+enum sort_by {
+  POPULARITY_ASC
+  POPULARITY_DESC
+  RELEASE_DATE_ASC
+  RELEASE_DATE_DESC
+  REVENUE_ASC
+  REVENUE_DESC
+  VOTE_AVERAGE_ASC
+  VOTE_AVERAGE_DESC
+  VOTE_COUNT_ASC
+  VOTE_COUNT_DESC
+}
+
+"""Genres"""
+enum genre {
+  Action
+  Adventure
+  Animation
+  Comedy
+  Crime
+  Documentary
+  Drama
+  Family
+  Fantasy
+  History
+  Horror
+  Music
+  Mystery
+  Romance
+  Science_Fiction
+  Movie
+  Thriller
+  War
+  Western
+}
+
+type Mutation {
+  updateMovie(updateMovieInput: Float!): Movie!
+}

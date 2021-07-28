@@ -1,0 +1,41 @@
+query Movies {
+  movies(
+	params:{
+    sort_by:REVENUE_ASC,
+    page:2,
+    genre:Action
+  }
+  ) {
+   page
+    total_results
+    total_pages
+   results {
+    id
+    title
+		release_date
+    vote_average
+    poster_path
+  }
+  }
+}
+
+query Movie {
+  movie(id:854185) {
+    title
+    tagline
+    release_date
+    vote_average
+    genres {
+      id
+      name
+    }
+  }
+}
+
+query Person {
+  person(id:1245) {
+    name
+    profile_path
+    gender
+  }
+}
