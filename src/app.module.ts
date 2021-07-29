@@ -27,6 +27,7 @@ require('dotenv').config();
         };
         return graphQLFormattedError;
       },
+      introspection: true,
     }),
 
     TypeOrmModule.forRoot({
