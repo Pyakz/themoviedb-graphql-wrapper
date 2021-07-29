@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CommentEntity } from './comment.entity';
-import { CommentInput, CommentType, Updated } from './comment.types';
+import { CommentInput, Updated } from './comment.types';
 
 @Injectable()
 export class CommentsService {
@@ -12,6 +12,7 @@ export class CommentsService {
     @InjectRepository(CommentEntity)
     private readonly CommentRepo: Repository<CommentEntity>,
   ) {}
+
   async create(
     CommentInput: CommentInput,
     currentUser: UserType,
@@ -19,12 +20,12 @@ export class CommentsService {
     const { body, movie } = CommentInput;
     try {
       const commentCreated = this.CommentRepo.create({
-        user:currentUser,
+        user: currentUser,
         body: body,
         movie: movie,
         createdAt: new Date(),
         updatedAt: new Date(),
-      })
+      });
 
       const created = await commentCreated.save();
 
@@ -45,21 +46,27 @@ export class CommentsService {
     }
   }
 
-  async findOne(id: string): Promise<CommentEntity | GraphQLError> {
+  async findOne(id: string): Promise<CommentEntity> {
     try {
       const comment = await this.CommentRepo.findOne(id);
-      if (!comment) {
-        throw new GraphQLError('Cannot find comment');
+      if (comment) {
+        return comment;
       }
-      return comment;
+      throw new GraphQLError('Cannot find comment');
     } catch (error) {
       throw new GraphQLError(error.message);
     }
   }
 
-  async update(id: string, body: string): Promise<Updated | GraphQLError> {
-    const foundComment = this.findOne(id);
-
+  async update(
+    id: string,
+    body: string,
+    currentUser: UserType,
+  ): Promise<Updated> {
+    const foundComment = await this.findOne(id);
+    if (foundComment.user._id !== currentUser._id) {
+      throw new GraphQLError('Unathorized');
+    }
     try {
       if (foundComment) {
         await this.CommentRepo.update(id, {
@@ -75,9 +82,12 @@ export class CommentsService {
     }
   }
 
-  async remove(id: string): Promise<Updated | GraphQLError> {
+  async remove(id: string, currentUser: UserType): Promise<Updated> {
+    const foundComment = await this.findOne(id);
+    if (foundComment.user._id !== currentUser._id) {
+      throw new GraphQLError('Unathorized');
+    }
     try {
-      const foundComment = this.findOne(id);
       if (foundComment) {
         await this.CommentRepo.delete(id);
         return {

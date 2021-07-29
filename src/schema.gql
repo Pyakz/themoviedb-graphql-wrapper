@@ -261,7 +261,6 @@ type Mutation {
 }
 
 input CommentInput {
-  user: String
   body: String
   movie: String
 }

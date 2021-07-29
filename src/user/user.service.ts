@@ -5,7 +5,7 @@ import { UserEntity } from './user.entity';
 import { CreateUserAccount, JWT, UserType } from './user.types';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
-
+import { Updated } from 'src/comments/comment.types';
 const bcrypt = require('bcryptjs');
 
 @Injectable()
@@ -16,27 +16,27 @@ export class UserService {
     private jwtService: JwtService,
   ) {}
 
-  async findOne(id: string): Promise<UserType | GraphQLError> {
+  async findOne(id: string): Promise<UserType> {
     try {
       const user = await this.UserRepo.findOne(id);
-      if (!user) {
-        throw new GraphQLError('Cannot find user');
+      if (user) {
+        return user;
       }
-      return user;
+      throw new GraphQLError('Cannot find user');
     } catch (error) {
       throw new GraphQLError(error.message);
     }
   }
 
-  async findByUserName(username: string): Promise<UserType | boolean> {
+  async findByUserName(username: string): Promise<UserType> {
     try {
       const user = await this.UserRepo.findOne({
         where: { username: username },
       });
-      if (!user) {
-        return false;
+      if (user) {
+        return user;
       }
-      return user;
+      throw new GraphQLError('Username does not exists.');
     } catch (error) {
       throw new GraphQLError(error.message);
     }
@@ -44,10 +44,11 @@ export class UserService {
 
   async create(createUserInput: CreateUserAccount) {
     const { username, password } = createUserInput;
-
+    const user = await this.UserRepo.findOne({
+      where: { username: username },
+    });
     try {
-      const findFirst = await this.findByUserName(username);
-      if (findFirst) {
+      if (user) {
         throw new GraphQLError('Username is already taken');
       } else {
         const salt = await bcrypt.genSalt(12);
@@ -67,15 +68,19 @@ export class UserService {
     } catch (error) {
       throw new GraphQLError(error.message);
     }
-
-    // const validPassword = await bcrypt.compare(password,hashedPassword)
   }
 
+  //---------------------------- User can only update their own ----------------------------//
 
-//---------------------------- User can only update their own ----------------------------//
-
-  async update(id: string, body: CreateUserAccount,currentUser:UserType) {
-    const findUser = this.findOne(id);
+  async update(
+    id: string,
+    body: CreateUserAccount,
+    currentUser: UserType,
+  ): Promise<Updated> {
+    const findUser = await this.findOne(id);
+    if (currentUser._id !== findUser._id) {
+      throw new GraphQLError('Unathorized');
+    }
     let newBody = {
       ...body,
     };
@@ -95,7 +100,7 @@ export class UserService {
           updatedAt: new Date(),
         });
         return {
-          message: 'Updated',
+          message: 'Updated Successfully',
         };
       }
     } catch (error) {
@@ -103,13 +108,16 @@ export class UserService {
     }
   }
 
-  async remove(id: string,currentUser:UserType) {
+  async remove(id: string, currentUser: UserType): Promise<Updated> {
+    const findOne = await this.findOne(id);
+    if (currentUser._id !== findOne._id) {
+      throw new GraphQLError('Unathorized');
+    }
     try {
-      const findOne = this.findOne(id);
       if (findOne) {
         await this.UserRepo.delete(id);
         return {
-          message: 'Deleted',
+          message: 'Deleted Successfully',
         };
       }
     } catch (error) {
@@ -120,15 +128,13 @@ export class UserService {
   //---------------------------- Generate a JWT token ----------------------------//
   createToken(id: string, username: string): JWT {
     return {
-      access_token: this.jwtService.sign({ _id:id, username }),
+      access_token: this.jwtService.sign({ _id: id, username }),
     };
   }
 
-  // //---------------------------- UserLogin ---------------------------- : Promise<JWT>//
+  //---------------------------- UserLogin ---------------------------- //
   async login(username: string, password: string): Promise<JWT> {
-    const user = await this.UserRepo.findOne({
-      where: { username: username },
-    });
+    const user = await this.findByUserName(username);
 
     const decodedPassword: boolean = await bcrypt.compareSync(
       password.toLowerCase(),

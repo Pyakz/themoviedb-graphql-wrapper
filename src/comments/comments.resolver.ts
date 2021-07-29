@@ -14,9 +14,8 @@ export class CommentsResolver {
   createComment(
     @Args('createComment') createComment: CommentInput,
     @Context('user') currentUser: UserType,
-
   ) {
-    return this.commentsService.create(createComment,currentUser);
+    return this.commentsService.create(createComment, currentUser);
   }
 
   @Query(() => [CommentType], { name: 'comments' })
@@ -30,12 +29,21 @@ export class CommentsResolver {
   }
 
   @Mutation(() => Updated)
-  updateComment(@Args('id') id: string, @Args('body') body: string) {
-    return this.commentsService.update(id, body);
+  @UseGuards(AuthGuard)
+  updateComment(
+    @Args('id') id: string,
+    @Args('body') body: string,
+    @Context('user') currentUser: UserType,
+  ) {
+    return this.commentsService.update(id, body, currentUser);
   }
 
   @Mutation(() => Updated)
-  removeComment(@Args('id', { type: () => String }) id: string) {
-    return this.commentsService.remove(id);
+  @UseGuards(AuthGuard)
+  removeComment(
+    @Args('id', { type: () => String }) id: string,
+    @Context('user') currentUser: UserType,
+  ) {
+    return this.commentsService.remove(id, currentUser);
   }
 }
