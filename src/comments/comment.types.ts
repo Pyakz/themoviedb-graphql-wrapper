@@ -1,3 +1,4 @@
+import { UserType } from './../user/user.types';
 import { ObjectType, Field, ID, InputType } from '@nestjs/graphql';
 
 @ObjectType()
@@ -5,8 +6,8 @@ export class CommentType {
   @Field((type) => ID, { nullable: true })
   _id: string;
 
-  @Field({ nullable: true })
-  user: string;
+  @Field((type) => UserType)
+  user: UserType;
 
   @Field({ nullable: true })
   movie: string;

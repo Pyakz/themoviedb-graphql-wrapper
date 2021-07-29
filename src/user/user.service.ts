@@ -71,7 +71,10 @@ export class UserService {
     // const validPassword = await bcrypt.compare(password,hashedPassword)
   }
 
-  async update(id: string, body: CreateUserAccount) {
+
+//---------------------------- User can only update their own ----------------------------//
+
+  async update(id: string, body: CreateUserAccount,currentUser:UserType) {
     const findUser = this.findOne(id);
     let newBody = {
       ...body,
@@ -100,7 +103,7 @@ export class UserService {
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string,currentUser:UserType) {
     try {
       const findOne = this.findOne(id);
       if (findOne) {
@@ -117,7 +120,7 @@ export class UserService {
   //---------------------------- Generate a JWT token ----------------------------//
   createToken(id: string, username: string): JWT {
     return {
-      access_token: this.jwtService.sign({ id, username }),
+      access_token: this.jwtService.sign({ _id:id, username }),
     };
   }
 

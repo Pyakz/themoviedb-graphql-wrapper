@@ -1,3 +1,4 @@
+import { UserType } from './../user/user.types';
 import { GraphQLError } from 'graphql';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,17 +12,20 @@ export class CommentsService {
     @InjectRepository(CommentEntity)
     private readonly CommentRepo: Repository<CommentEntity>,
   ) {}
-  async create(CommentInput: CommentInput): Promise<CommentType> {
-    const { user, body, movie } = CommentInput;
-
+  async create(
+    CommentInput: CommentInput,
+    currentUser: UserType,
+  ): Promise<CommentEntity> {
+    const { body, movie } = CommentInput;
     try {
       const commentCreated = this.CommentRepo.create({
-        user: user,
+        user:currentUser,
         body: body,
         movie: movie,
         createdAt: new Date(),
         updatedAt: new Date(),
-      });
+      })
+
       const created = await commentCreated.save();
 
       return created;
@@ -41,7 +45,7 @@ export class CommentsService {
     }
   }
 
-  async findOne(id: string): Promise<CommentType | GraphQLError> {
+  async findOne(id: string): Promise<CommentEntity | GraphQLError> {
     try {
       const comment = await this.CommentRepo.findOne(id);
       if (!comment) {

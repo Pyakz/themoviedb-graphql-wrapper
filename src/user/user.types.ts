@@ -8,7 +8,7 @@ export class JWT {
 
 @ObjectType()
 export class UserType {
-  @Field((type) => ID, { nullable: true })
+  @Field({ nullable: true })
   _id: string;
 
   @Field({ nullable: true })

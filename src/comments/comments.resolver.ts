@@ -1,4 +1,7 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { UserType } from './../user/user.types';
+import { UseGuards } from '@nestjs/common';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
+import { AuthGuard } from 'src/auth/auth.guard';
 import { CommentInput, CommentType, Updated } from './comment.types';
 import { CommentsService } from './comments.service';
 
@@ -6,9 +9,14 @@ import { CommentsService } from './comments.service';
 export class CommentsResolver {
   constructor(private readonly commentsService: CommentsService) {}
 
+  @UseGuards(AuthGuard)
   @Mutation(() => CommentType)
-  createComment(@Args('createComment') createComment: CommentInput) {
-    return this.commentsService.create(createComment);
+  createComment(
+    @Args('createComment') createComment: CommentInput,
+    @Context('user') currentUser: UserType,
+
+  ) {
+    return this.commentsService.create(createComment,currentUser);
   }
 
   @Query(() => [CommentType], { name: 'comments' })

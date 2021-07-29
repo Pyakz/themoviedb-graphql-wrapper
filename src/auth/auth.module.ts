@@ -16,6 +16,6 @@ import { AuthResolver } from './auth.resolver';
       signOptions: { expiresIn: '1h' },
     })
   ],
-  providers: [AuthResolver, UserService]
+  providers: [AuthResolver, UserService],
 })
 export class AuthModule {}

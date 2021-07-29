@@ -1,3 +1,4 @@
+import { MONGODB_PROD, MONGODB_DEV } from './constant';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
@@ -10,6 +11,7 @@ import { CommentsModule } from './comments/comments.module';
 import { UserModule } from './user/user.module';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
+require('dotenv').config();
 
 @Module({
   imports: [
@@ -26,10 +28,11 @@ import { AuthModule } from './auth/auth.module';
         return graphQLFormattedError;
       },
     }),
+
     TypeOrmModule.forRoot({
       type: 'mongodb',
-      url:process.env.NODE_ENV ? process.env.MONGO_URL : process.env.MONGO_URL_DEV,
-      synchronize: true,
+      url: process.env.NODE_ENV ? MONGODB_PROD : MONGODB_DEV,
+      synchronize: process.env.NODE_ENV ? false : true,
       useUnifiedTopology: true,
       entities: ['dist/**/*.entity{.ts,.js}'],
     }),

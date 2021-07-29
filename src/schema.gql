@@ -41,11 +41,14 @@ enum department {
   Writing
 }
 
-type CommentType {
-  _id: ID
-  user: String
-  movie: String
-  body: String
+type JWT {
+  access_token: String
+}
+
+type UserType {
+  _id: String
+  username: String
+  password: String
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -54,6 +57,15 @@ type CommentType {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type CommentType {
+  _id: ID
+  user: UserType!
+  movie: String
+  body: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
 
 type Updated {
   message: String
@@ -162,18 +174,6 @@ type Backdrop {
   width: Float
 }
 
-type JWT {
-  access_token: String
-}
-
-type UserType {
-  _id: ID
-  username: String
-  password: String
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
 type Query {
   """List of Movies"""
   movies(params: MoviesParameters!): Results!
@@ -254,10 +254,10 @@ type Mutation {
   createComment(createComment: CommentInput!): CommentType!
   updateComment(body: String!, id: String!): Updated!
   removeComment(id: String!): Updated!
+  login(password: String!, username: String!): JWT!
   createUser(createUserInput: CreateUserAccount!): UserType!
   updateUser(update: CreateUserAccount!, id: String!): Updated!
   removeUser(id: String!): Updated!
-  login(password: String!, username: String!): JWT!
 }
 
 input CommentInput {
