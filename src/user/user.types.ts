@@ -1,6 +1,12 @@
 import { ObjectType, Field, ID, InputType } from '@nestjs/graphql';
 
 @ObjectType()
+export class JWT {
+  @Field({ nullable: true })
+  access_token:string
+}
+
+@ObjectType()
 export class UserType {
   @Field((type) => ID, { nullable: true })
   _id: string;

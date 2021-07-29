@@ -2,17 +2,18 @@ import { GraphQLError } from 'graphql';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { UserEntity } from './user.entity';
-import { CreateUserAccount, UserType } from './user.types';
+import { CreateUserAccount, JWT, UserType } from './user.types';
 import { InjectRepository } from '@nestjs/typeorm';
+import { JwtService } from '@nestjs/jwt';
 
 const bcrypt = require('bcryptjs');
-const JWT = require('jsonwebtoken');
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly UserRepo: Repository<UserEntity>,
+    private jwtService: JwtService,
   ) {}
 
   async findOne(id: string): Promise<UserType | GraphQLError> {
@@ -27,7 +28,7 @@ export class UserService {
     }
   }
 
-  async findByUserName(username: string): Promise<boolean> {
+  async findByUserName(username: string): Promise<UserType | boolean> {
     try {
       const user = await this.UserRepo.findOne({
         where: { username: username },
@@ -35,7 +36,7 @@ export class UserService {
       if (!user) {
         return false;
       }
-      return true;
+      return user;
     } catch (error) {
       throw new GraphQLError(error.message);
     }
@@ -69,8 +70,6 @@ export class UserService {
 
     // const validPassword = await bcrypt.compare(password,hashedPassword)
   }
-
-
 
   async update(id: string, body: CreateUserAccount) {
     const findUser = this.findOne(id);
@@ -112,6 +111,32 @@ export class UserService {
       }
     } catch (error) {
       throw new GraphQLError(error.message);
+    }
+  }
+
+  //---------------------------- Generate a JWT token ----------------------------//
+  createToken(id: string, username: string): JWT {
+    return {
+      access_token: this.jwtService.sign({ id, username }),
+    };
+  }
+
+  // //---------------------------- UserLogin ---------------------------- : Promise<JWT>//
+  async login(username: string, password: string): Promise<JWT> {
+    const user = await this.UserRepo.findOne({
+      where: { username: username },
+    });
+
+    const decodedPassword: boolean = await bcrypt.compareSync(
+      password.toLowerCase(),
+      user.password,
+    );
+
+    if (decodedPassword) {
+      const token = this.createToken(user._id, user.username);
+      return token;
+    } else {
+      throw new GraphQLError('Password is incorrect');
     }
   }
 }

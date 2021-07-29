@@ -185,7 +185,5 @@ export class MoviesService {
     }
   }
 
-  update(id: number) {
-    return `This action updates a #${id} movie`;
-  }
+
 }

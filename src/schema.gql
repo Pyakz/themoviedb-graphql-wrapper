@@ -132,6 +132,8 @@ type Movie {
   vote_average: Float
   vote_count: Float
   videos: Videos
+
+  """Images of given movie"""
   images: Images!
   casts: Cast!
 }
@@ -160,6 +162,10 @@ type Backdrop {
   width: Float
 }
 
+type JWT {
+  access_token: String
+}
+
 type UserType {
   _id: ID
   username: String
@@ -169,13 +175,20 @@ type UserType {
 }
 
 type Query {
+  """List of Movies"""
   movies(params: MoviesParameters!): Results!
 
   """Top Rated, Popular, Upcoming"""
   discover(params: Discover!): Results!
+
+  """Search by keywords"""
   search(page: Int!, query: String!): Results!
   movie(id: Int!): Movie!
+
+  """Person or any actors"""
   person(id: Int!): CastElement!
+
+  """Similar Movies """
   similar(id: Int!, page: Int!): Results!
   comments(movieID: Float!): [CommentType!]!
   comment(id: String!): CommentType!
@@ -238,13 +251,13 @@ enum discover {
 }
 
 type Mutation {
-  updateMovie(updateMovieInput: Float!): Movie!
   createComment(createComment: CommentInput!): CommentType!
   updateComment(body: String!, id: String!): Updated!
   removeComment(id: String!): Updated!
   createUser(createUserInput: CreateUserAccount!): UserType!
   updateUser(update: CreateUserAccount!, id: String!): Updated!
   removeUser(id: String!): Updated!
+  login(password: String!, username: String!): JWT!
 }
 
 input CommentInput {

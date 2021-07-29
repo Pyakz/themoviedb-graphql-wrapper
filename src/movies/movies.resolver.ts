@@ -26,13 +26,13 @@ export class MoviesResolver {
     private readonly commentsService: CommentsService,
   ) {}
 
-  @Query(() => Results, { name: 'movies' })
+  @Query(() => Results, { name: 'movies', description: 'List of Movies' })
   findMany(
     @Args('params', { type: () => MoviesParameters }) params: MoviesParameters,
   ) {
     return this.moviesService.findMany(params);
   }
-  //popular
+  // popular
   // top_rated
   // upcoming
   @Query(() => Results, {
@@ -43,7 +43,7 @@ export class MoviesResolver {
     return this.moviesService.findByDiscover(params);
   }
 
-  @Query(() => Results, { name: 'search' })
+  @Query(() => Results, { name: 'search', description: 'Search by keywords' })
   findByQuery(
     @Args('query', { type: () => String }) query: string,
     @Args('page', { type: () => Int }) page: number,
@@ -56,12 +56,15 @@ export class MoviesResolver {
     return this.moviesService.findOne(id);
   }
 
-  @Query(() => CastElement, { name: 'person' })
+  @Query(() => CastElement, {
+    name: 'person',
+    description: 'Person or any actors',
+  })
   findPerson(@Args('id', { type: () => Int }) id: number) {
     return this.moviesService.findPerson(id);
   }
 
-  @Query(() => Results, { name: 'similar' })
+  @Query(() => Results, { name: 'similar', description: 'Similar Movies ' })
   async similar(
     @Args('page', { type: () => Int }) page: number,
     @Args('id', { type: () => Int }) id: number,
@@ -69,7 +72,10 @@ export class MoviesResolver {
     return this.moviesService.findSimilar(id, page);
   }
 
-  @ResolveField(() => Images, { name: 'images' })
+  @ResolveField(() => Images, {
+    name: 'images',
+    description: 'Images of given movie',
+  })
   async similarMovies(@Parent() movie: Movie) {
     const { id } = movie;
     return this.moviesService.findImages(id);
@@ -79,11 +85,6 @@ export class MoviesResolver {
   async cast(@Parent() movie: Movie) {
     const { id } = movie;
     return this.moviesService.findCast(id);
-  }
-
-  @Mutation(() => Movie)
- async updateMovie(@Args('updateMovieInput') updateMovieInput: number) {
-    return this.moviesService.update(updateMovieInput);
   }
 
   // Comments Related

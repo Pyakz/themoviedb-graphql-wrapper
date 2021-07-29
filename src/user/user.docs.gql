@@ -1,0 +1,35 @@
+mutation CreateUser {
+  createUser(createUserInput: { password: "12345", username: "Marky" }) {
+    username
+    password
+  }
+}
+
+query FindOne {
+  user(id: "610172555f216a1514a4f971") {
+    _id
+    username
+    password
+  }
+}
+
+query FindById {
+  user(id: "61017582451e802c287316fb") {
+    _id
+    username
+    password
+  }
+}
+mutation Update {
+  updateUser(
+    id: "61017c6acb2b262af874695d"
+    update: { username: "sarah", password: "marky" }
+  ) {
+    message
+  }
+}
+mutation Remove {
+  removeUser(id: "61017582451e802c287316fb") {
+    message
+  }
+}
