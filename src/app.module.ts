@@ -17,8 +17,10 @@ require('dotenv').config();
   imports: [
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      introspection: true,
+      installSubscriptionHandlers: true,
       context: ({ req }) => ({
-        headers: req.headers,
+        headers: req?.headers,
       }),
       formatError: (error: GraphQLError) => {
         const graphQLFormattedError: GraphQLFormattedError = {
@@ -27,7 +29,6 @@ require('dotenv').config();
         };
         return graphQLFormattedError;
       },
-      introspection: true,
     }),
 
     TypeOrmModule.forRoot({

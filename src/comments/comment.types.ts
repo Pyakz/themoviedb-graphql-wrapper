@@ -30,10 +30,9 @@ export class Updated {
 
 @InputType()
 export class CommentInput {
-
   @Field({ nullable: true })
   body: string;
 
   @Field({ nullable: true })
-  movie: string;
+  movie: number;
 }

@@ -38,7 +38,7 @@ export class CommentsService {
   async findComments(movieID: number) {
     try {
       const commentsInThisMovie = await this.CommentRepo.find({
-        where: { movie: movieID.toString() },
+        where: { movie: movieID },
       });
       return commentsInThisMovie;
     } catch (error) {

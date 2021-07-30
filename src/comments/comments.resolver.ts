@@ -1,9 +1,11 @@
 import { UserType } from './../user/user.types';
 import { UseGuards } from '@nestjs/common';
-import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context, Subscription } from '@nestjs/graphql';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CommentInput, CommentType, Updated } from './comment.types';
 import { CommentsService } from './comments.service';
+import { PubSub, PubSubEngine,  } from 'graphql-subscriptions';
+const pubSub:PubSubEngine = new PubSub();
 
 @Resolver(() => CommentType)
 export class CommentsResolver {
@@ -11,11 +13,13 @@ export class CommentsResolver {
 
   @UseGuards(AuthGuard)
   @Mutation(() => CommentType)
-  createComment(
+ async createComment(
     @Args('createComment') createComment: CommentInput,
     @Context('user') currentUser: UserType,
   ) {
-    return this.commentsService.create(createComment, currentUser);
+    const newComment = await this.commentsService.create(createComment, currentUser);
+    pubSub.publish('newComment', { newComment });
+    return newComment
   }
 
   @Query(() => [CommentType], { name: 'comments' })
@@ -46,4 +50,15 @@ export class CommentsResolver {
   ) {
     return this.commentsService.remove(id, currentUser);
   }
+
+  @Subscription(returns => CommentType, {
+    name: 'newComment',
+    filter(payload, variables) {
+      return payload.newComment.movie === variables.id;
+    }
+  })
+  newComment(@Args('id') id: number) {
+    return pubSub.asyncIterator('newComment');
+  }
+  
 }

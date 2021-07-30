@@ -1,4 +1,3 @@
-import { UserType } from 'src/user/user.types';
 import { JwtService } from '@nestjs/jwt';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';

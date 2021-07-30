@@ -6,7 +6,6 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "postinstall": "yarn && yarn build && yarn start:prod",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -34,6 +33,7 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^10.0.0",
     "graphql": "^15.5.1",
+    "graphql-subscriptions": "^1.2.1",
     "graphql-tools": "^7.0.5",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",

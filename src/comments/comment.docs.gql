@@ -39,3 +39,16 @@ mutation Delete {
     message
   }
 }
+
+subscription CommentAdded {
+  newComment(id:12354) {
+    _id
+    body
+    user {
+      _id
+      username
+    }
+    createdAt
+    updatedAt
+  }
+}

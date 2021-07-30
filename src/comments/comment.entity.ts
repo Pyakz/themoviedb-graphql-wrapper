@@ -13,7 +13,7 @@ export class CommentEntity extends BaseEntity {
   body: string;
 
   @Column({ nullable: true })
-  movie: string;
+  movie: number;
 
   @Column('date', { default: new Date() })
   createdAt: Date;

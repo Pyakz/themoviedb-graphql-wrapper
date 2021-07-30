@@ -262,10 +262,14 @@ type Mutation {
 
 input CommentInput {
   body: String
-  movie: String
+  movie: Float
 }
 
 input CreateUserAccount {
   username: String
   password: String
+}
+
+type Subscription {
+  newComment(id: Float!): CommentType!
 }
