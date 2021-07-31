@@ -10,7 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports:[ 
     TypeOrmModule.forFeature([
-      CommentEntity
+      CommentEntity,
     ]),
     JwtModule.register({
       secret: SECRET,

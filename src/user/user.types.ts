@@ -17,6 +17,7 @@ export class UserType {
   @Field({ nullable: true })
   password: string;
 
+
   @Field()
   createdAt: Date;
 

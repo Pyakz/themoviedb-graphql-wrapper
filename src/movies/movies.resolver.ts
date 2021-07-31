@@ -2,7 +2,6 @@ import { Cast, CastElement } from './typescript/cast.types';
 import {
   Resolver,
   Query,
-  Mutation,
   Args,
   Int,
   ResolveField,
@@ -94,13 +93,4 @@ export class MoviesResolver {
     return this.commentsService.findComments(id);
   }
 
-  // To be determined
-  // @ResolveField(() => Results, { name: 'similar_movies' })
-  // async similarMovies(
-  //   @Parent() movie: Movie,
-  //   @Args('page', { type: () => Int }) page: number,
-  // ) {
-  //   const { id } = movie;
-  //   return this.moviesService.findSimilar(id, page);
-  // }
 }

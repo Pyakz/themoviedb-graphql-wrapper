@@ -16,6 +16,9 @@ export class CommentType {
   body: string;
 
   @Field()
+  likes: number;
+
+  @Field()
   createdAt: Date;
 
   @Field()
@@ -35,4 +38,7 @@ export class CommentInput {
 
   @Field({ nullable: true })
   movie: number;
+
+  @Field({ defaultValue: 0 })
+  likes: number;
 }

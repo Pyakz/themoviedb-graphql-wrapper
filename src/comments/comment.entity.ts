@@ -14,7 +14,7 @@ export class CommentEntity extends BaseEntity {
 
   @Column({ nullable: true })
   movie: number;
-
+  
   @Column('date', { default: new Date() })
   createdAt: Date;
 

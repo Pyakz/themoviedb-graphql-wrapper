@@ -1,4 +1,3 @@
-import { InjectRepository } from '@nestjs/typeorm';
 import { Backdrop, Images } from './typescript/images.types';
 import { IMAGE_NOT_FOUND, PERSON_PROFILE_PLACEHOLDER } from './../constant';
 import { Discover, Result } from './typescript/movies.types';
